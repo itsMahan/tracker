@@ -20,7 +20,7 @@ while True:
 
         case 'Add' | '1':
             track_obj['name'] = input('Tracking Object Name: ')
-            track_obj['date'] = add_date()
+            track_obj['start_date'] = add_start_date()
             add_tracker(track_obj)
 
         case 'show' | '2':

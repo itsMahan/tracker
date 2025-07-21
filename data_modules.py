@@ -13,41 +13,49 @@ def add_tracker(tracking_obj):
     data_list.append(tracking_obj)
 
     with open(file, 'w', newline='') as csvfile:
-        fields = ['name', 'date']
+        fields = ['name', 'start_date']
         writer = csv.DictWriter(csvfile, fieldnames=fields)
         writer.writeheader()
         writer.writerows(data_list)
 
 
-def add_date():
+def add_start_date():
     print("when is the starting date? ")
     date_choice =  input("1 - now\n2 - select a specific date\n")
 
     match date_choice.strip():
         case 'now' | '1':
-            result = datetime.now()
+            result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         case 'select' | '2':
-            print("Not Implemented Yet ...")
-            exit()
+            print(f"type a date in this format: YYYY-MM-DD (e.g. Current Date: {datetime.now().strftime('%Y-%m-%d')})")
+            while True:
+                date_str = input('>>> ')
+                try:
+                    result = datetime.strptime(date_str, '%Y-%m-%d')
+                except ValueError:
+                    print("Wrong input, please try again")
+                else:
+                    break
 
         case _:
             print("Invalid choice")
             print("present datetime is selected by default")
-            result = datetime.now()
+            result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     return result
 
 
 # Function to convert string to datetime
-def convert(date_time):
-    format = '%Y-%m-%d %H:%M:%S.%f'
-    datetime_str = datetime.strptime(date_time, format)
+def convert(date_time, frmt):
+    # format = '%Y-%m-%d %H:%M:%S.%f'
+    datetime_str = datetime.strptime(date_time, frmt)
 
     return datetime_str
 
 
 def show_data():
+    print("\n=========== Tracking ================")
     data_list = []
     with open(file, 'r') as f:
         csvreader = csv.DictReader(f)
@@ -57,10 +65,11 @@ def show_data():
         print("No data")
     else:
         for row in data_list:
-            row['date'] = convert(row['date'])
-            passed_date = datetime.now() - row['date']
+            row['start_date'] = convert(row['start_date'], '%Y-%m-%d %H:%M:%S')
+            passed_date = datetime.now() - row['start_date']
             # print(f"{row['name']} -> {row['date'].strftime('%H:%M:%S %A, %B %d, %Y')} -> {passed_date.days} days, {passed_date.seconds//3600} hours, {passed_date.seconds//60} minuets ago")
-            print(f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{passed_date.seconds//60}m ago")
+            print(f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago")
+    print("=====================================")
 
 def clear_data():
     f = open(file, 'w')
