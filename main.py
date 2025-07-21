@@ -19,8 +19,21 @@ while True:
     match user_choice.strip():
 
         case 'Add' | '1':
-            track_obj['name'] = input('Tracking Object Name: ')
-            track_obj['start_date'] = add_start_date()
+            print('1 - Counter\n2 - Tracker')
+            user_add_choice = input('>>> ')
+            match user_add_choice.strip():
+                case '1' | 'counter':
+                    track_obj['name'] = input('Tracking Object Name: ')
+                    track_obj['start_date'] = add_start_date()
+                    print('Counter Started...')
+                case '2' | 'tracker':
+                    track_obj['name'] = input('Tracking Object Name: ')
+                    track_obj['start_date'] = add_start_date()
+                    track_obj['end_date'] = add_end_date()
+                case _:
+                    print('Invalid choice')
+                    break
+
             add_tracker(track_obj)
 
         case 'show' | '2':
