@@ -102,8 +102,14 @@ def show_data():
         for row in data_list:
             row['start_date'] = convert(row['start_date'], '%Y-%m-%d %H:%M:%S')
             passed_date = datetime.now() - row['start_date']
-            # print(f"{row['name']} -> {row['date'].strftime('%H:%M:%S %A, %B %d, %Y')} -> {passed_date.days} days, {passed_date.seconds//3600} hours, {passed_date.seconds//60} minuets ago")
-            print(f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago")
+
+            if row['end_date']:
+                row['end_date'] = convert(row['end_date'], '%Y-%m-%d %H:%M:%S')
+                end_date = row['end_date'] - row['start_date']
+                row = f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago \t->\t Ends in {end_date.days} days."
+            else:
+                row = f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago."
+            print(row)
     print("=====================================")
 
 def clear_data():
