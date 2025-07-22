@@ -13,7 +13,7 @@ def add_tracker(tracking_obj):
     data_list.append(tracking_obj)
 
     with open(file, 'w', newline='') as csvfile:
-        fields = ['name', 'start_date', 'end_date']
+        fields = ['name', 'type', 'start_date', 'end_date_or_event_amount']
         writer = csv.DictWriter(csvfile, fieldnames=fields)
         writer.writeheader()
         writer.writerows(data_list)
@@ -89,6 +89,33 @@ def convert(date_time, frmt):
     return datetime_str
 
 
+def search_event(name):
+    data_list = []
+    with open(file, 'r') as f:
+        csvreader = csv.DictReader(f)
+        for row in csvreader:
+            data_list.append(row)
+    for data in data_list:
+        if data['name'] == name:
+            return True
+    return False
+
+def event_increment(name):
+    data_list = []
+    with open(file, 'r') as f:
+        csvreader = csv.DictReader(f)
+        for row in csvreader:
+            data_list.append(row)
+    for data in data_list:
+        if data['name'] == name:
+            data['end_date_or_event_amount'] = int(data['end_date_or_event_amount']) + 1
+
+    with open(file, 'w', newline='') as csvfile:
+        fields = ['name', 'type', 'start_date', 'end_date_or_event_amount']
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(data_list)
+
 def show_data():
     print("\n=========== Tracking ================")
     data_list = []
@@ -103,12 +130,18 @@ def show_data():
             row['start_date'] = convert(row['start_date'], '%Y-%m-%d %H:%M:%S')
             passed_date = datetime.now() - row['start_date']
 
-            if row['end_date']:
-                row['end_date'] = convert(row['end_date'], '%Y-%m-%d %H:%M:%S')
-                end_date = row['end_date'] - row['start_date']
-                row = f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago \t->\t Ends in {end_date.days} days."
+            if row['type'] == 'tracker':
+                if row['end_date_or_event_amount']:
+                    row['end_date_or_event_amount'] = convert(row['end_date_or_event_amount'], '%Y-%m-%d %H:%M:%S')
+                    end_date = row['end_date_or_event_amount'] - row['start_date']
+                    row = f"{row['name']}, {row['type']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago \t->\t Ends in {end_date.days} days."
+                else:
+                    row = f"{row['name']}, {row['type']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago."
+            elif row['type'] == 'daily':
+                row = f"{row['name']}, {row['type']} \t->\t {passed_date.days} days passed."
             else:
-                row = f"{row['name']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago."
+                row = f"{row['name']}, {row['type']} \t->\t x{row['end_date_or_event_amount']}"
+                # row = f"{row['name']}, {row['type']} \t->\t Started {passed_date.days}d,{passed_date.seconds//3600}h,{(passed_date.seconds//60)%60}m ago."
             print(row)
     print("=====================================")
 
