@@ -3,9 +3,11 @@ from data_modules import *
 
 menu = '''
 1 - Add 
-2 - show
-3 - Clear 
-4 - exit
+2 - edit
+3 - delete
+4 - show
+5 - Clear 
+6 - exit
 
 '''
 
@@ -31,7 +33,7 @@ while True:
                 case '2' | 'event':
                     track_obj['name'] = input('Event Counter Name: ')
                     track_obj['type'] = 'event'
-                    is_found = search_event(track_obj['name'])
+                    is_found = search_data(track_obj['name'])
                     if is_found:
                         print('Event Found! and Incremented...')
                         event_increment(track_obj['name'])
@@ -50,13 +52,51 @@ while True:
                     print('Invalid choice')
                     break
 
-        case 'show' | '2':
-            show_data()
+        case 'edit' | '2':
+            name_to_edit = input('Name to edit: ')
+            is_found = search_data(name_to_edit)
+            if not is_found:
+                print('not fount!')
+            else:
+                new_track_obj = dict()
+                new_track_obj['type'] = input('New Tracking Object Type(daily/event/tracker): ')
+                match new_track_obj['type']:
+                    case 'daily':
+                        new_track_obj['name'] = input('New Daily Counter Name: ')
+                        new_track_obj['type'] = 'daily'
+                        new_track_obj['start_date'] = add_start_date()
+                        new_track_obj['end_date_or_event_amount'] = ''
+                    case 'event':
+                        new_track_obj['name'] = input('New Event Counter Name: ')
+                        new_track_obj['type'] = 'event'
+                        new_track_obj['start_date'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        new_track_obj['end_date_or_event_amount'] = '1'
+                        print('New Event Counter Started...')
+                    case 'tracker':
+                        new_track_obj['name'] = input('New Tracking Object Name: ')
+                        new_track_obj['type'] = 'tracker'
+                        new_track_obj['start_date'] = add_start_date()
+                        new_track_obj['end_date_or_event_amount'] = add_end_date()
 
-        case 'clear' | '3':
+                print("data successfully updated!")
+                edit_data(name_to_edit, new_track_obj)
+
+        case 'delete' | '3':
+            name_to_delete = input('Name to delete: ')
+            is_found = search_data(name_to_delete)
+            if not is_found:
+                print('not fount!')
+            else:
+                print("data successfully deleted!")
+                delete_data(name_to_delete)
+
+        case 'show' | '4':
+                show_data()
+
+        case 'clear' | '5':
             clear_data()
 
-        case 'exit' | '4':
+        case 'exit' | '6':
             print('Bye!')
             exit()
 

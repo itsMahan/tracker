@@ -89,7 +89,7 @@ def convert(date_time, frmt):
     return datetime_str
 
 
-def search_event(name):
+def search_data(name):
     data_list = []
     with open(file, 'r') as f:
         csvreader = csv.DictReader(f)
@@ -109,12 +109,51 @@ def event_increment(name):
     for data in data_list:
         if data['name'] == name:
             data['end_date_or_event_amount'] = int(data['end_date_or_event_amount']) + 1
+            break
 
     with open(file, 'w', newline='') as csvfile:
         fields = ['name', 'type', 'start_date', 'end_date_or_event_amount']
         writer = csv.DictWriter(csvfile, fieldnames=fields)
         writer.writeheader()
         writer.writerows(data_list)
+
+
+def edit_data(name_to_edit, new_track_obj):
+    data_list = []
+    with open(file, 'r') as f:
+        csvreader = csv.DictReader(f)
+        for row in csvreader:
+            data_list.append(row)
+    for data in data_list:
+        if data['name'] == name_to_edit:
+            data['name'] = new_track_obj['name']
+            data['type'] = new_track_obj['type']
+            data['start_date'] = new_track_obj['start_date']
+            data['end_date_or_event_amount'] = new_track_obj['end_date_or_event_amount']
+
+    with open(file, 'w', newline='') as csvfile:
+        fields = ['name', 'type', 'start_date', 'end_date_or_event_amount']
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(data_list)
+
+
+def delete_data(name_to_delete):
+    data_list = []
+    with open(file, 'r') as f:
+        csvreader = csv.DictReader(f)
+        for row in csvreader:
+            data_list.append(row)
+    for data in data_list:
+        if data['name'] == name_to_delete:
+            data_list.remove(data)
+
+    with open(file, 'w', newline='') as csvfile:
+        fields = ['name', 'type', 'start_date', 'end_date_or_event_amount']
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(data_list)
+
 
 def show_data():
     print("\n=========== Tracking ================")
