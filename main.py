@@ -12,7 +12,7 @@ menu = '''
 track_obj = dict()
 
 while True:
-
+    track_obj.clear()
     print(menu)
     user_choice = input('Your choice: ')
 

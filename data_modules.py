@@ -25,14 +25,14 @@ def add_start_date():
 
     match date_choice.strip():
         case 'now' | '1':
-            result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            start_date_result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         case 'select' | '2':
             print(f"type a date in this format: YYYY-MM-DD (e.g. Current Date: {datetime.now().strftime('%Y-%m-%d')})")
             while True:
                 date_str = input('>>> ')
                 try:
-                    result = datetime.strptime(date_str, '%Y-%m-%d')
+                    start_date_result = datetime.strptime(date_str, '%Y-%m-%d')
                 except ValueError:
                     print("Wrong input, please try again")
                 else:
@@ -41,9 +41,9 @@ def add_start_date():
         case _:
             print("Invalid choice")
             print("present datetime is selected by default")
-            result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            start_date_result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    return result
+    return start_date_result
 
 
 def add_end_date():
@@ -53,32 +53,32 @@ def add_end_date():
     match date_choice.strip():
         case 'specify' | '1':
             days = int(input('>>> '))
-            result = (datetime.now() + timedelta(days=days)).strftime('%Y-%m-%d %H:%M:%S')
+            end_date_result = (datetime.now() + timedelta(days=days)).strftime('%Y-%m-%d %H:%M:%S')
 
         case 'select' | '2':
             print(f"type a date in this format: YYYY-MM-DD (e.g. Current Date: {datetime.now().strftime('%Y-%m-%d')})")
             while True:
                 date_str = input('>>> ')
                 try:
-                    result = datetime.strptime(date_str, '%Y-%m-%d')
+                    end_date_result = datetime.strptime(date_str, '%Y-%m-%d')
                 except ValueError:
                     print("Wrong input, please try again")
                 else:
-                    if result < datetime.now():
+                    if end_date_result < datetime.now():
                         print("Ending date can't be in the past, please try again")
                         ##TODO handle check end date must be after start date
                     else:
                         break
 
         case 'No' | '3':
-            result = ''
+            end_date_result = ''
 
         case _:
             print("Invalid choice")
             print("present datetime is selected by default")
             result = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    return result
+    return end_date_result
 
 
 # Function to convert string to datetime
